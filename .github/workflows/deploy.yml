@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    steps:  
+    steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
@@ -17,14 +17,22 @@ jobs:
       uses: google-github-actions/setup-gcloud@v2
       with:
         version: '389.0.0'
-        service_account_email: anhnkt@vinorsoft.com
-        service_account_key: 47f39077009157d3448759f7ea25554787fb13eb
-        project_id: justtuananh
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
         export_default_credentials: true
+
+    - name: Configure Docker authentication with GCP
+      run: |
+        echo ${GCP_SA_KEY} | gcloud auth activate-service-account --key-file=-
+        gcloud auth configure-docker asia.gcr.io
+        if [ $? -eq 0 ]; then
+          echo "Docker authentication with GCP successful"
+        else
+          echo "Docker authentication with GCP failed" >&2
+          exit 1
+        fi
 
     - name: Build and push Docker image
       run: |
-        gcloud auth configure-docker
         docker build -t asia.gcr.io/justtuananh/backend:$GITHUB_SHA .
         docker push asia.gcr.io/justtuananh/backend:$GITHUB_SHA
 
