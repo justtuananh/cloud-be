@@ -16,7 +16,7 @@ jobs:
     - name: Set up Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v2
       with:
-        version: '343.0.0'
+        version: '389.0.0'
         service_account_email: anhnkt@vinorsoft.com
         service_account_key: 47f39077009157d3448759f7ea25554787fb13eb
         project_id: justtuananh
