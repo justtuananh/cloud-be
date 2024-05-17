@@ -36,7 +36,10 @@ jobs:
     #     location: ${{ env.GKE_ZONE }}
 
 
-
+      uses: 'google-github-actions/auth@v2'
+      with:
+        credentials_json: '${{ secrets.GKE_SA_KEY }}'
+        
     - name: Build and push Docker image
       run: |
         docker build -t asia.gcr.io/justtuananh/backend:$GITHUB_SHA .
