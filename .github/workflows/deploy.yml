@@ -31,6 +31,15 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Print env and secrets
+      run: |
+        echo "PROJECT_ID: ${{ env.PROJECT_ID }}"
+        echo "GKE_CLUSTER: ${{ env.GKE_CLUSTER }}"
+        echo "GKE_ZONE: ${{ env.GKE_ZONE }}"
+        echo "DEPLOYMENT_NAME: ${{ env.DEPLOYMENT_NAME }}"
+        echo "IMAGE: ${{ env.IMAGE }}"
+        echo "GKE_SA_KEY: ${{ secrets.GKE_SA_KEY }}"  # Cẩn thận khi in ra thông tin nhạy cảm
+
     # Setup gcloud CLI
     - uses: google-github-actions/setup-gcloud@1bee7de035d65ec5da40a31f8589e240eba8fde5
       with:
@@ -49,14 +58,7 @@ jobs:
         location: us-central1 
         credentials: ${{ secrets.GKE_SA_KEY }}
 
-    - name: Print env and secrets
-      run: |
-        echo "PROJECT_ID: ${{ env.PROJECT_ID }}"
-        echo "GKE_CLUSTER: ${{ env.GKE_CLUSTER }}"
-        echo "GKE_ZONE: ${{ env.GKE_ZONE }}"
-        echo "DEPLOYMENT_NAME: ${{ env.DEPLOYMENT_NAME }}"
-        echo "IMAGE: ${{ env.IMAGE }}"
-        echo "GKE_SA_KEY: ${{ secrets.GKE_SA_KEY }}"  # Cẩn thận khi in ra thông tin nhạy cảm
+
 
 
     # Build the Docker image
