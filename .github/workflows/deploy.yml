@@ -49,6 +49,16 @@ jobs:
         location: us-central1 
         credentials: ${{ secrets.GKE_SA_KEY }}
 
+    - name: Print env and secrets
+      run: |
+        echo "PROJECT_ID: ${{ env.PROJECT_ID }}"
+        echo "GKE_CLUSTER: ${{ env.GKE_CLUSTER }}"
+        echo "GKE_ZONE: ${{ env.GKE_ZONE }}"
+        echo "DEPLOYMENT_NAME: ${{ env.DEPLOYMENT_NAME }}"
+        echo "IMAGE: ${{ env.IMAGE }}"
+        echo "GKE_SA_KEY: ${{ secrets.GKE_SA_KEY }}"  # Cẩn thận khi in ra thông tin nhạy cảm
+
+
     # Build the Docker image
     - name: Build
       run: |-
@@ -61,7 +71,7 @@ jobs:
     # Push the Docker image to Google Container Registry
     - name: Publish
       run: |-
-        docker push "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
+        docker push "asia.gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
 
     # Set up kustomize
     - name: Set up Kustomize
@@ -72,7 +82,7 @@ jobs:
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
       run: |-
-        ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
+        ./kustomize edit set image asia.gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
         ./kustomize build . | kubectl apply -f -
         kubectl rollout status deployment/gke-test
         kubectl get services -o wide
